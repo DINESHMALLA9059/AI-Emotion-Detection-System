@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+torch
+librosa
+numpy
+pandas
+scikit-learn
+python-multipart
+aiofiles
+python-dotenv

@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .animate-slideUp {
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Custom component styles */
+.emotion-badge {
+  @apply inline-flex items-center px-4 py-2 rounded-full font-semibold text-white;
+}
+
+.emotion-badge.happy {
+  @apply bg-yellow-500;
+}
+
+.emotion-badge.sad {
+  @apply bg-blue-500;
+}
+
+.emotion-badge.angry {
+  @apply bg-red-500;
+}
+
+.risk-badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+}
+
+.risk-badge.high {
+  @apply bg-red-100 text-red-800;
+}
+
+.risk-badge.medium {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.risk-badge.low {
+  @apply bg-green-100 text-green-800;
+}

@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: mental-health-api
+    runtime: python
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    plan: standard
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PYTHON_VERSION
+        value: "3.11"
+    buildCommand: "pip install -r requirements.txt"
+    rootDir: Backend
+    healthCheckPath: /health
+    healthCheckInterval: 300
+    autoDeploy: true
+    region: oregon
+    registryCredential: null
+    dockerfilePath: null
+
+  - type: static
+    name: mental-health-frontend
+    buildCommand: "npm run build"
+    startCommand: "npm start"
+    staticPublishPath: build
+    buildFilter:
+      paths:
+        - Frontend/**
+    rootDir: Frontend
+    envVars:
+      - key: REACT_APP_API_BASE_URL
+        fromService:
+          type: web
+          property: url
+          path: /api
+    autoDeploy: true
+    region: oregon

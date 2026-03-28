@@ -1,0 +1,25 @@
+{
+  "buildCommand": "cd Frontend && npm run build",
+  "outputDirectory": "Frontend/build",
+  "framework": "react",
+  "nodeVersion": "20.x",
+  "env": {
+    "REACT_APP_API_BASE_URL": "@env_api_url"
+  },
+  "github": {
+    "enabled": true,
+    "autoAlias": true,
+    "silent": false
+  },
+  "alias": ["mental-health-ai.vercel.app"],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://mental-health-api-production.onrender.com/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
