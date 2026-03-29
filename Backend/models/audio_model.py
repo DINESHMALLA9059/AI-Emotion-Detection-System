@@ -66,6 +66,9 @@ def _safe_mfcc_resize(mfcc, target_shape=(40, 40)):
 def extract(file):
     try:
         y, sr = librosa.load(file, duration=3)
+        # Handle empty/silent decode results gracefully during warmups.
+        if y is None or len(y) == 0:
+            y = np.zeros(22050, dtype=np.float32)
         mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=40)
         # Normalize to match training preprocessing
         mfcc = (mfcc - np.mean(mfcc)) / (np.std(mfcc) + 1e-6)
@@ -76,9 +79,15 @@ def extract(file):
         raise
 
 
-def predict_audio(file_path):
+def predict_audio(file_path, allow_silent=False):
     m = _load_model()
-    features = extract(file_path)
+    try:
+        features = extract(file_path)
+    except Exception:
+        if not allow_silent:
+            raise
+        # Fallback path used only for startup warmup.
+        features = np.zeros((40, 40), dtype=np.float32)
 
     features = np.expand_dims(features, axis=0)
     features = np.expand_dims(features, axis=0)

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 from routes.audio_routes import router as audio_router
 from models import audio_model
+import tempfile
 
 # Load environment variables
 load_dotenv()
@@ -43,6 +44,17 @@ async def preload_model():
     """Preload ML model to avoid long first-request delays."""
     try:
         audio_model._load_model()
+        # Warm up the full inference stack once so first user request does not pay init cost.
+        warmup_enabled = os.getenv("MODEL_WARMUP", "true").lower() == "true"
+        if warmup_enabled:
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+                warmup_path = tmp.name
+            try:
+                audio_model.predict_audio(warmup_path, allow_silent=True)
+                logger.info("Completed audio inference warmup")
+            finally:
+                if os.path.exists(warmup_path):
+                    os.remove(warmup_path)
         logger.info("Preloaded audio model on startup")
     except Exception as e:
         logger.error(f"Failed to preload audio model: {e}")
