@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiCheckCircle, FiAlertCircle, FiTrendingUp } from 'react-icons/fi';
+import { FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 
 interface EmotionResult {
   emotion: string;
