@@ -3,7 +3,7 @@
   "outputDirectory": "Frontend/build",
   "framework": "create-react-app",
   "env": {
-    "REACT_APP_API_BASE_URL": "@env_api_url"
+    "REACT_APP_API_BASE_URL": "https://mental-health-api.onrender.com"
   },
   "github": {
     "enabled": true,
