@@ -2,11 +2,23 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
+import wave
 from dotenv import load_dotenv
 
 from routes.audio_routes import router as audio_router
 from models import audio_model
 import tempfile
+
+
+def _create_silent_wav(path: str, duration_seconds: float = 0.5, sample_rate: int = 22050) -> None:
+    """Create a tiny valid PCM WAV file for model warmup."""
+    frame_count = max(1, int(duration_seconds * sample_rate))
+    silent_pcm = b"\x00\x00" * frame_count  # 16-bit mono silence
+    with wave.open(path, "wb") as wav_file:
+        wav_file.setnchannels(1)
+        wav_file.setsampwidth(2)
+        wav_file.setframerate(sample_rate)
+        wav_file.writeframes(silent_pcm)
 
 # Load environment variables
 load_dotenv()
@@ -50,6 +62,7 @@ async def preload_model():
             with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
                 warmup_path = tmp.name
             try:
+                _create_silent_wav(warmup_path)
                 audio_model.predict_audio(warmup_path, allow_silent=True)
                 logger.info("Completed audio inference warmup")
             finally:
