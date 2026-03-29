@@ -2,7 +2,6 @@
   "buildCommand": "cd Frontend && npm run build",
   "outputDirectory": "Frontend/build",
   "framework": "react",
-  "nodeVersion": "20.x",
   "env": {
     "REACT_APP_API_BASE_URL": "@env_api_url"
   },
